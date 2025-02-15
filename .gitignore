@@ -33,4 +33,9 @@ ENV/
 
 # Project specific
 *.ply
-combined_scene.ply 
+combined_scene.ply
+
+# Allow specific output files
+!depth_analysis.png
+!depth_comparison.png
+!output/ai_depth_metric.exr 
