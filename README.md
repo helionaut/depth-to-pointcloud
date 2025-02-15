@@ -1,66 +1,68 @@
-# Depth Map Conversion Environment
+# Depth Map to Point Cloud Conversion
 
-This project converts a radial distance map into a depth map using a set of camera parameters. The main script, `dist2depth.py`, performs the following steps:
+This project provides tools for converting depth maps into 3D point clouds, with support for proper camera transformations and multi-view reconstruction.
 
-1. Reads an input image (expected to contain a radial distance map) from `/mnt/data/0010021_exr.png`.
-2. If the image has multiple channels, it extracts the first channel and scales it accordingly.
-3. Converts the radial distance to depth by taking into account camera parameters such as focal length, sensor width (film gate), and image dimensions.
-4. Normalizes and saves the resulting depth map as a PNG image (`/mnt/data/depth_image.png`).
-5. Displays the depth map using matplotlib.
+## Project Structure
 
-## Environment Setup
+- `single_camera_ply.py`: Converts depth maps from individual cameras into a combined point cloud
+- `dist2depth.py`: Converts radial distance maps to depth maps
+- `stereo_voxel.py`: Processes stereo image pairs for 3D reconstruction with voxelization
 
-### Requirements
+## Input Data
 
-The required Python packages are listed in `requirements.txt`:
+The project expects input files in the `input` folder:
+- Depth maps: `MetricDepth-VRayCam001.VRayZDepth.0021.exr`, `MetricDepth-VRayCam002.VRayZDepth.0021.exr`
+- Color images: `MetricDepth-VRayCam0010021.png`, `MetricDepth-VRayCam0020021.png`
 
-- numpy
-- opencv-python
-- matplotlib
+## Camera Parameters
 
-### Creating a Virtual Environment
+The scripts use the following camera parameters:
+- Focal length: 6.0mm
+- Film gate (sensor width): 14.186mm
+- Camera baseline: 1.549421m
+- Tilt angle: 11.0 degrees
 
-It is recommended to use a Python virtual environment. You can create and activate one using the following commands:
+## Usage
 
-#### Using venv (Python built-in):
+### Environment Setup
 
-For Windows (Command Prompt):
+Create and activate a Python virtual environment:
 
-```
+```bash
+# Windows (Command Prompt)
 python -m venv env
 env\Scripts\activate
-pip install -r requirements.txt
-```
 
-For Windows (PowerShell):
-
-```
+# Windows (PowerShell)
 python -m venv env
 .\env\Scripts\Activate.ps1
+
+# Install dependencies
 pip install -r requirements.txt
 ```
 
-#### Using Conda:
+### Converting Depth Maps to Point Cloud
 
-```
-conda create -n depth_env python=3.9
-conda activate depth_env
-pip install -r requirements.txt
-```
+```bash
+# Process single camera depth maps and combine into one point cloud
+python single_camera_ply.py
 
-## Running the Script
-
-Once the environment is set up and the required packages are installed, you can run the script as follows:
-
-```
+# Convert radial distance maps to depth maps
 python dist2depth.py
+
+# Process stereo pairs with voxelization
+python stereo_voxel.py
 ```
 
-Ensure that the input image exists at the specified path (`/mnt/data/0010021_exr.png`) or update the script accordingly.
+## Output
 
-## Notes
+- `single_camera_ply.py` generates `combined_scene.ply`
+- `dist2depth.py` saves depth maps in the `output` folder
+- `stereo_voxel.py` creates `fused_point_cloud.ply`
 
-- If the input image is not found, the script will print an error message.
-- The script uses OpenCV's image reading and writing functions, so make sure the image paths are correctly set up for your system.
+## Dependencies
 
-Happy coding! 
+Required Python packages (specified in `requirements.txt`):
+- numpy
+- opencv-python
+- matplotlib 
